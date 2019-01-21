@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="index.css">
+    <title>Pentachoron</title>
+  </head>
+  <body>
+    <div id="all">
+      <div id='top'>
+        <img id='logo' onclick="setFelix()" src="" alt="Felix the Robot">
+        <h1 id='title'>Penta<span id='choron'>choron</span></h1>
+      </div>
+
+      <div id='bottom'>
+        <h3 id='subtitle'>Convert scanned files to accessable formats </h3>
+        <div id='convertLine'>
+          <p>I want to convert</p>
+          <div id='selector'>
+            <select onchange="setConvertFrom()" id='convertFrom'>
+              <option value=""></option>
+              <option value="PDF">PDF</option>
+            </select>
+          </div>
+          <p>into</p>
+          <div id='selector'>
+            <select onchange="setConvertTo()" id='convertTo'>
+              <option value=""></option>
+              <option value="Text">Text</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="holder">
+      	  <p>Drag your <span id='fileTypeName'></span> file here</p>
+          <p>or</p>
+          <input id='fileInput' type='file' onchange="setFileFromBtn()">
+      	</div>
+
+      	<div id="processing">
+      		<p id="instruction"></p>
+          <div id='progress'>
+        		<progress id="progressBar" value="0" max="100">
+        		</progress>
+            <p id='progressPercent'></p>
+            <p id='timeRemaining'></p>
+          </div>
+      		<p id="writeLocation"></p>
+      	</div>
+
+        <button id='convertBtn' onclick="convert()">Convert</button>
+
+        <button id='cancelBtn' onclick="cancel()">Cancel</button>
+
+        <button id='canceling' disabled>Canceling</button>
+
+        <button id='resetBtn' onclick="reset()">Reset</button>
+		
+		<button id='openFileLocation' onclick="openFileLocation()">Open File Location</button>
+      </div>
+    </div>
+
+  	<script>
+  	  document.getElementById('holder').addEventListener('drop', function (e) {
+    		e.preventDefault();
+    		e.stopPropagation();
+        document.getElementById('holder').style.color = 'green';
+
+    		for (let f of e.dataTransfer.files) {
+  	      //console.log('File(s) you dragged here: ', f.path)
+  	      setFile(f.path);
+  	      //setVisualFilePath(f.path);
+    		}
+  	  });
+  	  document.getElementById('holder').addEventListener('dragover', function (e) {
+        document.getElementById('holder').style.color = 'blue';
+    		e.preventDefault();
+    		e.stopPropagation();
+  	  });
+      document.getElementById('holder').addEventListener('dragleave', function (e) {
+        document.getElementById('holder').style.color = 'black';
+    		e.preventDefault();
+    		e.stopPropagation();
+  	  });
+  	</script>
+
+  	<script type="text/javascript" src="built/tess.js"></script>
+  </body>
+</html>
