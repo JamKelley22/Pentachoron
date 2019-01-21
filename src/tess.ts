@@ -298,7 +298,7 @@ let compareParseNumbers = function compareNumbers(a, b) {
 	dLog("compareParseNumbers") 
 	return parseInt(a.split(".")[0]) - parseInt(b.split(".")[0]);
 } 
-
+ 
 /*
 function writeImageFilenames() {
 	let command = 'ls ./output/images/*.jpg > output/imageNames.txt'//May have to change
