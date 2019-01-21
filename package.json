@@ -7,8 +7,8 @@
   "scripts": {
     "start": "tsc && electron .",
     "dev": "nodemon --watch src/tess.ts --watch index.html --watch index.css --exec \"tsc && electron .\"",
-	"clean": "rm Logs/* output/*",
-	"build_winx64": "electron-packager . --out ./Builds/ --icon icon.ico --executable-name Pentachoron-win32-x64 --app-version %npm_package_version% --extra-resource resources/Ghostscript/ --extra-resource resources/Tesseract-OCR/ && mv Builds/Pentachoron-win32-x64 Builds/Pentachoron-win32-x64_v%npm_package_version%"
+    "clean": "rm Logs/* output/*",
+    "build_winx64": "electron-packager . --out ./Builds/ --icon icon.ico --executable-name Pentachoron-win32-x64 --app-version %npm_package_version% --extra-resource resources/Ghostscript/ --extra-resource resources/Tesseract-OCR/ && mv Builds/Pentachoron-win32-x64 Builds/Pentachoron-win32-x64_v%npm_package_version%",
   },
   "author": "Jameel Kelley",
   "license": "ISC",

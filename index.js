@@ -1,4 +1,7 @@
-const { app, shell, BrowserWindow, Menu } = require('electron')
+const { app, shell, BrowserWindow, Menu, autoUpdater } = require('electron')
+
+const server = 'https://hazel-server-zrbjxatgtc.now.sh/'
+const feed = `${server}/update/${process.platform}/${app.getVersion()}`
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -6,7 +9,12 @@ let win;
 
 let menu;
 
-buildMenu();
+init();
+
+function init() {
+	autoUpdater.setFeedURL(feed)
+	buildMenu();
+}
 
 function createWindow () {
   // Create the browser window.
@@ -16,7 +24,7 @@ function createWindow () {
   win.loadFile('index.html')
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   //Remove Menu Bar
   win.setMenu(menu);

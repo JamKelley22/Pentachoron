@@ -295,9 +295,9 @@ function combineTextFiles(newFileName) {
 }
 
 let compareParseNumbers = function compareNumbers(a, b) {
-	dLog("compareParseNumbers")
+	dLog("compareParseNumbers") 
 	return parseInt(a.split(".")[0]) - parseInt(b.split(".")[0]);
-}
+} 
 
 /*
 function writeImageFilenames() {
