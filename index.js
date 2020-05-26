@@ -12,7 +12,7 @@ let menu;
 init();
 
 function init() {
-	autoUpdater.setFeedURL(feed)
+	//autoUpdater.setFeedURL(feed)
 	buildMenu();
 }
 

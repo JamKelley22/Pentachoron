@@ -1,33 +1,34 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var child_process = require('child_process');
+var child_process = require("child_process");
 var exec = child_process.exec, child;
 var execSync = child_process.execSync;
-var fs = require('fs');
-var electron = require('electron');
+var fs = require("fs");
+var electron = require("electron");
 var remote = electron.remote;
 var app = remote.app;
 var shell = electron.shell;
-var path = require('path');
+var path = require("path");
 var { dialog } = remote;
 const debug = true;
 const logging = true;
-let convertFrom = '';
-let convertTo = '';
-let userFilePath = '';
+let convertFrom = "";
+let convertTo = "";
+let userFilePath = "";
 let canceled = false;
 let isWindowsSystem = false;
-let outputTextFile = path.join(__dirname, ...['output', 'text', '0']);
-let outputFolder = path.join(__dirname, ...['output', 'text']);
-let mergedTextOutputName = 'output.txt';
-let errorLogPath = path.join(__dirname, ...['Logs', 'error.log']);
-let logFilePath = path.join(__dirname, ...['Logs', 'log.log']);
+let outputTextFile = path.join(__dirname, ...["output", "text", "0"]);
+let outputFolder = path.join(__dirname, ...["output", "text"]);
+let mergedTextOutputName = "output.txt";
+let errorLogPath = path.join(__dirname, ...["Logs", "error.log"]);
+let logFilePath = path.join(__dirname, ...["Logs", "log.log"]);
 init();
 function init() {
     dLog("\n==========Open==========\n");
@@ -41,7 +42,7 @@ function setFelix() {
         "svgs/bow.svg",
         "svgs/fez.svg",
         "svgs/topHat.svg",
-        "svgs/none.svg"
+        "svgs/none.svg",
     ];
     let randomNum = getRandomInt(0, hatArr.length - 1);
     dLog(randomNum);
@@ -55,7 +56,8 @@ function getRandomInt(min, max) {
 }
 function setFile(filePath) {
     dLog("setFile");
-    dLog(filePath);
+    //const escapedFilepath: string = escapeSpacesInFilepath(filePath);
+    //dLog(escapedFilepath);
     userFilePath = filePath;
     checkVisibleButton();
 }
@@ -67,12 +69,19 @@ function setFileFromBtn() {
     dLog(userFilePath);
     checkVisibleButton();
 }
+function escapeSpacesInFilepath(userFilePath) {
+    const escapedFilepath = userFilePath.replace(/(?=[() ])/g, "\\");
+    userFilePath = escapedFilepath;
+    return escapedFilepath;
+}
 function convert() {
     dLog("convert");
     if (isWindowsSystem) {
-        document.getElementById('holder').style.display = 'none';
-        document.getElementById('processing').style.display = 'block';
-        setModalBtn('cancel');
+        document.getElementById("holder").style.display = "none";
+        document.getElementById("processing").style.display = "block";
+        setModalBtn("cancel");
+        // const escapedFilepath: string = escapeSpacesInFilepath(userFilePath);
+        // log("ESCAPED" + escapedFilepath);
         start(userFilePath);
     }
     else {
@@ -86,12 +95,12 @@ function start(pdfPath) {
             return;
         log("Starting");
         dLog(pdfPath);
-        let split = pdfPath.split('.');
+        let split = pdfPath.split(".");
         if (split.length > 1) {
             log("Parsing Filename");
             let extention = split[split.length - 1].toUpperCase();
             switch (extention) {
-                case 'PDF':
+                case "PDF":
                     log("Got PDF");
                     log("Clearing Files");
                     clearLastFiles();
@@ -129,10 +138,10 @@ function start(pdfPath) {
                 return;
             }
             log("Done");
-            shell.showItemInFolder(path.join(__dirname, ...['output', mergedTextOutputName]));
+            shell.showItemInFolder(path.join(__dirname, ...["output", mergedTextOutputName]));
             remote.getCurrentWindow().setProgressBar(-1);
             shell.beep();
-            setModalBtn('reset');
+            setModalBtn("reset");
         }
         else {
             //No file extention or hidden file (eg .pdf)
@@ -148,9 +157,9 @@ function convertPDFToImages(pdf) {
             return;
         log("Converting PDF To Images");
         return new Promise(function (resolve, reject) {
-            let sOutputFile = path.join(__dirname, ...['output', "images/%03d.jpg"]);
-            let command = `start /B resources/Ghostscript/bin/gswin64c.exe -dNOPAUSE -sDEVICE=jpeg -r200 -dJPEGQ=60 -sOutputFile=${sOutputFile} ${pdf} -dBATCH`;
-            //console.log(command);
+            let sOutputFile = path.join(__dirname, ...["output", "images/%03d.jpg"]);
+            let command = `start /B resources/Ghostscript/bin/gswin64c.exe -dNOPAUSE -sDEVICE=jpeg -r200 -dJPEGQ=60 -sOutputFile="${sOutputFile}" "${pdf}" -dBATCH`;
+            dLog(command);
             exec(command, function (error, stdout, stderr) {
                 dLog(stdout);
                 dLog(stderr);
@@ -232,7 +241,7 @@ function decodeImage(imageName, outputTextFile, num) {
                 dLog(stderr);
                 resolve(stdout);
                 if (error !== null) {
-                    console.log('exec error: ' + error);
+                    console.log("exec error: " + error);
                 }
             });
         });
@@ -243,43 +252,43 @@ function combineTextFiles(newFileName) {
     if (checkCancel())
         return;
     log("Mergeing Text Files");
-    let dir = path.join(__dirname, ...['output', 'text']);
+    let dir = path.join(__dirname, ...["output", "text"]);
     let text_files = fs.readdirSync(dir);
     text_files = text_files.sort(compareParseNumbers);
-    let newFilePath = path.join(__dirname, ...['output', newFileName]);
-    fs.writeFileSync(newFilePath, 'Pentachoron @ 2019\n', function (err) {
+    let newFilePath = path.join(__dirname, ...["output", newFileName]);
+    fs.writeFileSync(newFilePath, "Pentachoron @ 2019\n", function (err) {
         if (err)
             throw err;
     });
     dLog(text_files);
     for (let file of text_files) {
         let textFileData;
-        dLog(path.join(__dirname, ...['output', 'text', file]));
+        dLog(path.join(__dirname, ...["output", "text", file]));
         dLog(file);
         dLog("Test");
         try {
-            let fileContents = fs.readFileSync(path.join(__dirname, ...['output', 'text', file]));
+            let fileContents = fs.readFileSync(path.join(__dirname, ...["output", "text", file]));
             fs.appendFileSync(newFilePath, fileContents);
         }
         catch (err) {
             error(err);
         }
         /*
-        await fs.readFile(path.join(__dirname,...['output','text',file]), function(err, data) {
-            dLog("Here")
-            if (err) throw err;
-            
-            dLog(data)
-            fs.appendFile(newFilePath, data, function (err) {
+            await fs.readFile(path.join(__dirname,...['output','text',file]), function(err, data) {
+                dLog("Here")
                 if (err) throw err;
+                
+                dLog(data)
+                fs.appendFile(newFilePath, data, function (err) {
+                    if (err) throw err;
+                });
             });
-        });
-        */
+            */
         /*
-        fs.unlink(path.join(__dirname,...['output','text',file]), function (err) {
-          if (err) throw err;
-        });
-        */
+            fs.unlink(path.join(__dirname,...['output','text',file]), function (err) {
+              if (err) throw err;
+            });
+            */
     }
 }
 let compareParseNumbers = function compareNumbers(a, b) {
@@ -305,12 +314,12 @@ function getImageFilenames() {
         return;
     log("Getting Image Filenames");
     return new Promise(function (resolve, reject) {
-        let dir = path.join(__dirname, ...['output', 'images']);
+        let dir = path.join(__dirname, ...["output", "images"]);
         var fileContents;
         try {
             fileContents = fs.readdirSync(dir);
-            let files = fileContents.map(file => {
-                return path.join(__dirname, ...['output', 'images', file]);
+            let files = fileContents.map((file) => {
+                return path.join(__dirname, ...["output", "images", file]);
             });
             resolve(files);
         }
@@ -324,7 +333,7 @@ function clearLastFiles() {
     if (checkCancel())
         return;
     log("Clearing Previous Files");
-    let dir = path.join(__dirname, ...['output', 'images']);
+    let dir = path.join(__dirname, ...["output", "images"]);
     const image_files = fs.readdirSync(dir);
     for (let filePath of image_files) {
         fs.unlink(`${dir}/${filePath}`, (err) => {
@@ -332,7 +341,7 @@ function clearLastFiles() {
                 error(err);
         });
     }
-    dir = path.join(__dirname, ...['output', 'text']);
+    dir = path.join(__dirname, ...["output", "text"]);
     let text_files = fs.readdirSync(dir);
     for (let filePath of text_files) {
         fs.unlink(`${dir}/${filePath}`, (err) => {
@@ -349,7 +358,7 @@ function log(msg) {
     if (logging) {
         console.log(msg);
         let ins = document.getElementById("instruction");
-        ins.style.color = 'black';
+        ins.style.color = "black";
         ins.innerHTML = msg;
     }
 }
@@ -362,7 +371,7 @@ function error(msg) {
     console.error(msg);
     if (logging) {
         let ins = document.getElementById("instruction");
-        ins.style.color = 'red';
+        ins.style.color = "red";
         ins.innerHTML = msg;
     }
     fs.appendFile(errorLogPath, `${Date.now()}: ${msg}\n`, () => { });
@@ -370,25 +379,27 @@ function error(msg) {
 function setProgress(progress) {
     dLog("setProgress");
     remote.getCurrentWindow().setProgressBar(progress);
-    document.getElementById("progressBar").value = progress * 100;
+    document.getElementById("progressBar").value =
+        progress * 100;
     document.getElementById("progressPercent").innerHTML = `${Math.round(progress * 100)}%`;
 }
 function setConvertFrom() {
     dLog("setConvertFrom");
-    convertFrom = document.getElementById("convertFrom").value;
-    if (convertFrom !== '') {
-        document.getElementById('holder').style.display = 'flex';
+    convertFrom = document.getElementById("convertFrom")
+        .value;
+    if (convertFrom !== "") {
+        document.getElementById("holder").style.display = "flex";
         document.getElementById("fileTypeName").innerHTML = convertFrom;
     }
     else {
-        document.getElementById('holder').style.display = 'none';
+        document.getElementById("holder").style.display = "none";
     }
     checkVisibleButton();
 }
 function setConvertTo() {
     dLog("setConvertTo");
     convertTo = document.getElementById("convertTo").value;
-    if (convertTo !== '') {
+    if (convertTo !== "") {
     }
     else {
     }
@@ -396,20 +407,20 @@ function setConvertTo() {
 }
 function checkVisibleButton() {
     dLog("checkVisibleButton");
-    if (convertFrom !== '' && convertTo !== '' && userFilePath !== '') {
-        setModalBtn('convert');
+    if (convertFrom !== "" && convertTo !== "" && userFilePath !== "") {
+        setModalBtn("convert");
     }
     else {
-        setModalBtn('none');
+        setModalBtn("none");
     }
 }
 function openFileLocation() {
-    shell.openItem(path.join(__dirname, ...['output']));
+    shell.openItem(path.join(__dirname, ...["output"]));
 }
 function cancel() {
     dLog("cancel");
     canceled = true;
-    setModalBtn('canceling');
+    setModalBtn("canceling");
 }
 function checkCancel() {
     dLog("checkCancel");
@@ -425,44 +436,44 @@ function reset() {
     dLog("reset");
     log("Reset");
     remote.getCurrentWindow().setProgressBar(-1);
-    document.getElementById('holder').style.display = 'flex';
-    document.getElementById("writeLocation").innerHTML = '';
+    document.getElementById("holder").style.display = "flex";
+    document.getElementById("writeLocation").innerHTML = "";
     document.getElementById("openFileLocation").style.display = "none";
-    setModalBtn('convert');
+    setModalBtn("convert");
 }
 function setModalBtn(btn) {
     dLog("setModalBtn");
     dLog(btn);
     switch (btn) {
-        case 'convert':
-            document.getElementById('convertBtn').style.display = 'block';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('canceling').style.display = 'none';
+        case "convert":
+            document.getElementById("convertBtn").style.display = "block";
+            document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("resetBtn").style.display = "none";
+            document.getElementById("canceling").style.display = "none";
             break;
-        case 'cancel':
-            document.getElementById('convertBtn').style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'block';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('canceling').style.display = 'none';
+        case "cancel":
+            document.getElementById("convertBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "block";
+            document.getElementById("resetBtn").style.display = "none";
+            document.getElementById("canceling").style.display = "none";
             break;
-        case 'reset':
-            document.getElementById('convertBtn').style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'block';
-            document.getElementById('canceling').style.display = 'none';
+        case "reset":
+            document.getElementById("convertBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("resetBtn").style.display = "block";
+            document.getElementById("canceling").style.display = "none";
             break;
-        case 'canceling':
-            document.getElementById('convertBtn').style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('canceling').style.display = 'block';
+        case "canceling":
+            document.getElementById("convertBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("resetBtn").style.display = "none";
+            document.getElementById("canceling").style.display = "block";
             break;
-        case 'none':
-            document.getElementById('convertBtn').style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('canceling').style.display = 'none';
+        case "none":
+            document.getElementById("convertBtn").style.display = "none";
+            document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("resetBtn").style.display = "none";
+            document.getElementById("canceling").style.display = "none";
             break;
         default:
     }

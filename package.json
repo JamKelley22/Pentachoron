@@ -1,7 +1,7 @@
 {
   "name": "pentachoron",
   "productName": "Pentachoron",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "GUI Layer for Tesseract OCR",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,9 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^4.0.1",
-    "electron-packager": "^13.0.1"
+    "electron-packager": "^13.0.1",
+    "nodemon": "^2.0.3",
+    "typescript": "^3.8.3"
   },
   "dependencies": {}
 }

@@ -32,5 +32,4 @@ typings/
 .yarn-integrity
 
 # Program outputs
-output/images/*
-output/text/*
+output/
