@@ -13,7 +13,7 @@
   "author": "Jameel Kelley",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^4.0.1",
+    "electron": "^11.5.0",
     "electron-packager": "^13.0.1",
     "nodemon": "^2.0.3",
     "typescript": "^3.8.3"
